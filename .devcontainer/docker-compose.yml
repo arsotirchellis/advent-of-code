@@ -1,0 +1,16 @@
+version: "3"
+services:
+  advent-of-code-2023-dev-container:
+    container_name: advent-of-code-2023-dev-container
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.dev
+    volumes:
+      - ..:/advent-of-code-2023
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - .env
+    tty: true
+    stdin_open: true
+    command: bash
+

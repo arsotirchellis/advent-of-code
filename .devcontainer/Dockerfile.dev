@@ -1,0 +1,30 @@
+FROM python:3.10-slim-buster as base
+
+ENV PYTHONUNBUFFERED=1
+
+RUN apt-get update && \
+    apt-get -qy full-upgrade && \
+    apt-get install -qy curl && \
+    apt-get install -y wget gcc zlib1g-dev g++ make && \
+    curl -sSL https://get.docker.com/ | sh && \
+    bash
+
+RUN pip install --upgrade pip
+RUN pip install -U autopep8
+
+WORKDIR /advent-of-code-2023
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    POETRY_VERSION=1.3.2
+
+RUN pip install "poetry==$POETRY_VERSION"
+COPY pyproject.toml poetry.lock ./
+RUN python -m venv .venv
+ENV PATH=".venv/bin:$PATH"
+RUN poetry config virtualenvs.in-project true
+RUN poetry config virtualenvs.create true
+RUN poetry install
+
+RUN git config --global core.autocrlf true
+RUN git config --global core.filemode false
