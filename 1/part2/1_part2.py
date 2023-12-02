@@ -44,19 +44,6 @@ with open(path, "r") as file:
     contents = file.read()
 
 calibrations = [x for x in contents.split("\n")]
-# calibrations = [
-# 'jcb82eightwond'
-# ]
-# one
-# two
-# three
-# four
-# five
-# six
-# seven
-# eight
-# nine
-
 
 numbers = []
 for calibration in calibrations:
