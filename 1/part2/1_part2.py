@@ -44,10 +44,9 @@ with open(path, "r") as file:
     contents = file.read()
 
 calibrations = [x for x in contents.split("\n")]
-calibrations = [
-# 'sevene',
-'fone'
-]
+# calibrations = [
+# 'jcb82eightwond'
+# ]
 # one
 # two
 # three
@@ -65,25 +64,35 @@ for calibration in calibrations:
     calibration_numbers = []
     
     working_trie = numbers_trie
+    working_tries = []
+    indexes_to_delete = []
+
     for c in characters:
         if c.isdigit():
             calibration_numbers.append(int(c))
-            working_trie = numbers_trie
+            working_tries = []
             continue
-        if c in working_trie:
-            working_trie = working_trie[c]
-            if type(working_trie) == int:
-                calibration_numbers.append(working_trie)
-                working_trie = numbers_trie
-                continue
-        elif c in numbers_trie:
-            working_trie = numbers_trie[c]
-            if type(working_trie) == int:
-                calibration_numbers.append(working_trie)
-                working_trie = numbers_trie
-                continue
-        else:
-            working_trie = numbers_trie
+
+        for i, working_trie in enumerate(working_tries):
+            if c in working_trie:
+                working_tries[i] = working_trie[c]
+                if type(working_tries[i]) == int:
+                    calibration_numbers.append(working_tries[i])
+                    working_tries = []
+                    break
+            else:
+                indexes_to_delete.append(i)
+        
+        if len(indexes_to_delete) > 0:
+            new_working_tries = []
+            for i, working_trie in enumerate(working_tries):
+                if i not in indexes_to_delete:
+                    new_working_tries.append(working_trie)
+            working_tries = new_working_tries
+            indexes_to_delete = []
+
+        if c in numbers_trie:
+            working_tries.append(numbers_trie[c])
             
     number = 0
     number += 10 * calibration_numbers[0]
