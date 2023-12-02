@@ -34,15 +34,10 @@ def recursive_trie_construction(dictionary, characters, value) -> dict:
     return dictionary
     
 numbers = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-reverted_numbers = [x[::-1] for x in numbers]
 
 numbers_trie = {}
 for index, number in enumerate(numbers):
     numbers_trie = recursive_trie_construction(numbers_trie, number, index + 1)
-
-reverted_numbers_trie = {}
-for index, number in enumerate(reverted_numbers):
-    reverted_numbers_trie = recursive_trie_construction(reverted_numbers_trie, number, index + 1)
 
 path = Path(__file__).parent / "./input.txt"
 with open(path, "r") as file:
@@ -50,7 +45,8 @@ with open(path, "r") as file:
 
 calibrations = [x for x in contents.split("\n")]
 calibrations = [
-'sevene'
+# 'sevene',
+'fone'
 ]
 # one
 # two
@@ -67,44 +63,31 @@ numbers = []
 for calibration in calibrations:
     characters = [x for x in calibration]
     calibration_numbers = []
-    number = 0
     
     working_trie = numbers_trie
     for c in characters:
         if c.isdigit():
-            number = 10 * int(c)
-            break
+            calibration_numbers.append(int(c))
+            working_trie = numbers_trie
+            continue
         if c in working_trie:
             working_trie = working_trie[c]
             if type(working_trie) == int:
-                number = 10 * int(working_trie)
-                break
+                calibration_numbers.append(working_trie)
+                working_trie = numbers_trie
+                continue
         elif c in numbers_trie:
             working_trie = numbers_trie[c]
             if type(working_trie) == int:
-                number = 10 * int(working_trie)
-                break
+                calibration_numbers.append(working_trie)
+                working_trie = numbers_trie
+                continue
         else:
             working_trie = numbers_trie
             
-    working_trie = reverted_numbers_trie
-    for c in reversed(characters):
-        if c.isdigit():
-            number += int(c)
-            break
-        if c in working_trie:
-            working_trie = working_trie[c]
-            if type(working_trie) == int:
-                number += int(working_trie)
-                break
-        elif c in reverted_numbers_trie:
-            working_trie = reverted_numbers_trie[c]
-            if type(working_trie) == int:
-                number += int(working_trie)
-                break
-        else:
-            working_trie = reverted_numbers_trie
-            continue
+    number = 0
+    number += 10 * calibration_numbers[0]
+    number += calibration_numbers[-1]
 
     numbers.append(number)
 
